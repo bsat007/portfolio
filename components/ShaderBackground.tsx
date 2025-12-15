@@ -313,6 +313,51 @@ float cloudShape(vec2 uv, float time, float speed, float scale, float offset) {
   return n;
 }
 
+// Star field function - creates twinkling stars
+float stars(vec2 uv, float time, float density, float size) {
+  // Create a grid of potential star positions
+  vec2 gridUv = uv * density;
+  vec2 gridId = floor(gridUv);
+  vec2 gridFract = fract(gridUv);
+  
+  float starBrightness = 0.0;
+  
+  // Check neighboring cells for smoother distribution
+  for(int y = -1; y <= 1; y++) {
+    for(int x = -1; x <= 1; x++) {
+      vec2 neighbor = vec2(float(x), float(y));
+      vec2 cellId = gridId + neighbor;
+      
+      // Random position within cell
+      float rand = hash21(cellId);
+      vec2 starPos = neighbor + vec2(hash21(cellId + 0.1), hash21(cellId + 0.2)) - gridFract;
+      
+      // Distance to star
+      float dist = length(starPos);
+      
+      // Only show star if random value is high enough (controls density)
+      float showStar = step(0.92, rand);
+      
+      // Star size varies
+      float starSize = size * (0.5 + rand * 0.5);
+      
+      // Twinkle effect - each star twinkles at different rate
+      float twinkle = sin(time * (2.0 + rand * 4.0) + rand * 6.28) * 0.5 + 0.5;
+      twinkle = 0.4 + twinkle * 0.6; // Keep minimum brightness
+      
+      // Star intensity falloff
+      float intensity = smoothstep(starSize, 0.0, dist) * showStar * twinkle;
+      
+      // Vary star brightness
+      intensity *= (0.6 + rand * 0.4);
+      
+      starBrightness = max(starBrightness, intensity);
+    }
+  }
+  
+  return starBrightness;
+}
+
 void main() {
   vec2 uv = vUv;
   float aspectRatio = uResolution.x / uResolution.y;
@@ -340,7 +385,7 @@ void main() {
   float cloud4 = cloudShape(uv4, time, 0.08, 6.0, 3.0);
   
   // Color palette - dark moody clouds (lightened for visibility)
-  vec3 bgColor = vec3(0.03, 0.03, 0.04);
+  vec3 bgColor = vec3(0.02, 0.02, 0.03);
   vec3 cloudColor1 = vec3(0.10, 0.11, 0.16);  // Deep blue-grey
   vec3 cloudColor2 = vec3(0.13, 0.14, 0.20);  // Slightly lighter
   vec3 cloudColor3 = vec3(0.16, 0.17, 0.23);  // Mid tone
@@ -349,14 +394,32 @@ void main() {
   // Subtle highlight color for edges
   vec3 highlightColor = vec3(0.24, 0.27, 0.35);
   
+  // Star colors - subtle warm and cool tints
+  vec3 starColorWarm = vec3(1.0, 0.95, 0.85);
+  vec3 starColorCool = vec3(0.85, 0.92, 1.0);
+  
   // Composite layers with depth
   vec3 color = bgColor;
   
+  // Add stars behind the clouds (two layers for depth)
+  vec2 starUv = uv + vec2(0.0, uScrollY * parallaxStrength * 0.1); // Very slow parallax
+  float starLayer1 = stars(starUv, time, 80.0, 0.08);  // Dense, small stars
+  float starLayer2 = stars(starUv * 0.5 + 100.0, time * 0.7, 40.0, 0.12);  // Sparse, larger stars
+  
+  // Mix star colors based on position for variety
+  float colorMix = hash21(floor(starUv * 50.0));
+  vec3 starColor = mix(starColorWarm, starColorCool, colorMix);
+  
+  // Add stars to background
+  color += starColor * starLayer1 * 0.7;
+  color += starColor * starLayer2 * 0.9;
+  
   // Add each layer with decreasing opacity for depth
-  color = mix(color, cloudColor1, cloud1 * 0.4);
-  color = mix(color, cloudColor2, cloud2 * 0.35);
-  color = mix(color, cloudColor3, cloud3 * 0.3);
-  color = mix(color, cloudColor4, cloud4 * 0.25);
+  // Clouds partially obscure the stars behind them
+  color = mix(color, cloudColor1, cloud1 * 0.5);
+  color = mix(color, cloudColor2, cloud2 * 0.45);
+  color = mix(color, cloudColor3, cloud3 * 0.4);
+  color = mix(color, cloudColor4, cloud4 * 0.35);
   
   // Add subtle edge highlights on the brightest parts
   float highlight = max(max(cloud3, cloud4) - 0.5, 0.0) * 2.0;
