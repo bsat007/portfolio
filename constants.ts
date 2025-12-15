@@ -2,7 +2,7 @@ import { ResumeData } from './types';
 
 export const RESUME_DATA: ResumeData = {
   name: "Badal Satyarthi",
-  title: "Data Scientist · Machine Learning Engineer · NLP Engineer",
+  title: "AI Engineer",
   summary: [
     "Accomplished Machine Learning Engineer and Software Developer boasting 8+ years of programming experience, with a deep-rooted passion for Machine Learning, Data Science, and AI.",
     "Fluent in Python and adept at solving complex problems, developing statistical Machine Learning models, and constructing ML pipelines from scratch.",

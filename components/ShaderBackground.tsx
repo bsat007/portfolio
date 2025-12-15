@@ -237,6 +237,183 @@ const DitheredShape: React.FC<ShapeProps> = ({
   );
 };
 
+// --- Parallax Cloud Layer Shader ---
+const cloudLayerVertexShader = `
+varying vec2 vUv;
+
+void main() {
+  vUv = uv;
+  gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+}
+`;
+
+const cloudLayerFragmentShader = `
+uniform float uTime;
+uniform vec2 uResolution;
+uniform float uScrollY;
+
+varying vec2 vUv;
+
+// Hash functions for noise
+vec2 hash22(vec2 p) {
+  p = vec2(dot(p, vec2(127.1, 311.7)), dot(p, vec2(269.5, 183.3)));
+  return -1.0 + 2.0 * fract(sin(p) * 43758.5453123);
+}
+
+float hash21(vec2 p) {
+  return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453123);
+}
+
+// Simplex-like 2D noise
+float noise2D(vec2 p) {
+  vec2 i = floor(p);
+  vec2 f = fract(p);
+  
+  vec2 u = f * f * (3.0 - 2.0 * f);
+  
+  return mix(
+    mix(hash21(i + vec2(0.0, 0.0)), hash21(i + vec2(1.0, 0.0)), u.x),
+    mix(hash21(i + vec2(0.0, 1.0)), hash21(i + vec2(1.0, 1.0)), u.x),
+    u.y
+  );
+}
+
+// Fractal Brownian Motion
+float fbm(vec2 p, int octaves) {
+  float value = 0.0;
+  float amplitude = 0.5;
+  float frequency = 1.0;
+  float lacunarity = 2.0;
+  float persistence = 0.5;
+  
+  for(int i = 0; i < 8; i++) {
+    if(i >= octaves) break;
+    value += amplitude * noise2D(p * frequency);
+    amplitude *= persistence;
+    frequency *= lacunarity;
+  }
+  return value;
+}
+
+// Cloud shape function - creates billowy cloud forms
+float cloudShape(vec2 uv, float time, float speed, float scale, float offset) {
+  vec2 movement = vec2(time * speed, time * speed * 0.3);
+  vec2 pos = uv * scale + movement + vec2(offset * 100.0, offset * 50.0);
+  
+  // Base cloud noise
+  float n = fbm(pos, 6);
+  
+  // Create cloud-like billows
+  n = smoothstep(0.3, 0.7, n);
+  
+  // Add wispy details
+  float detail = fbm(pos * 3.0 + vec2(time * speed * 0.5), 4) * 0.3;
+  n += detail * n;
+  
+  return n;
+}
+
+void main() {
+  vec2 uv = vUv;
+  float aspectRatio = uResolution.x / uResolution.y;
+  uv.x *= aspectRatio;
+  
+  float time = uTime;
+  
+  // Parallax offset based on scroll
+  float parallaxStrength = 0.0003;
+  
+  // Layer 1 - Far background clouds (slowest, largest)
+  vec2 uv1 = uv + vec2(0.0, uScrollY * parallaxStrength * 0.3);
+  float cloud1 = cloudShape(uv1, time, 0.02, 1.5, 0.0);
+  
+  // Layer 2 - Mid clouds
+  vec2 uv2 = uv + vec2(0.0, uScrollY * parallaxStrength * 0.6);
+  float cloud2 = cloudShape(uv2, time, 0.035, 2.5, 1.0);
+  
+  // Layer 3 - Closer clouds (faster, smaller details)
+  vec2 uv3 = uv + vec2(0.0, uScrollY * parallaxStrength * 1.0);
+  float cloud3 = cloudShape(uv3, time, 0.05, 4.0, 2.0);
+  
+  // Layer 4 - Foreground wisps (fastest)
+  vec2 uv4 = uv + vec2(0.0, uScrollY * parallaxStrength * 1.5);
+  float cloud4 = cloudShape(uv4, time, 0.08, 6.0, 3.0);
+  
+  // Color palette - dark moody clouds
+  vec3 bgColor = vec3(0.02, 0.02, 0.03);
+  vec3 cloudColor1 = vec3(0.06, 0.07, 0.10);  // Deep blue-grey
+  vec3 cloudColor2 = vec3(0.08, 0.09, 0.13);  // Slightly lighter
+  vec3 cloudColor3 = vec3(0.10, 0.11, 0.15);  // Mid tone
+  vec3 cloudColor4 = vec3(0.12, 0.14, 0.18);  // Lighter wisps
+  
+  // Subtle highlight color for edges
+  vec3 highlightColor = vec3(0.15, 0.18, 0.25);
+  
+  // Composite layers with depth
+  vec3 color = bgColor;
+  
+  // Add each layer with decreasing opacity for depth
+  color = mix(color, cloudColor1, cloud1 * 0.4);
+  color = mix(color, cloudColor2, cloud2 * 0.35);
+  color = mix(color, cloudColor3, cloud3 * 0.3);
+  color = mix(color, cloudColor4, cloud4 * 0.25);
+  
+  // Add subtle edge highlights on the brightest parts
+  float highlight = max(max(cloud3, cloud4) - 0.5, 0.0) * 2.0;
+  color = mix(color, highlightColor, highlight * 0.15);
+  
+  // Vignette effect - darker at edges
+  vec2 vignetteUv = vUv * 2.0 - 1.0;
+  float vignette = 1.0 - dot(vignetteUv * 0.5, vignetteUv * 0.5);
+  vignette = smoothstep(0.0, 1.0, vignette);
+  color *= vignette * 0.7 + 0.3;
+  
+  // Overall transparency
+  float alpha = 0.85;
+  
+  gl_FragColor = vec4(color, alpha);
+}
+`;
+
+// Full-screen cloud layer component
+const CloudLayer: React.FC = () => {
+  const meshRef = useRef<THREE.Mesh>(null);
+  const { viewport } = useThree();
+  
+  const uniforms = useMemo(
+    () => ({
+      uTime: { value: 0 },
+      uResolution: { value: new THREE.Vector2(window.innerWidth, window.innerHeight) },
+      uScrollY: { value: 0 }
+    }),
+    []
+  );
+
+  useFrame((state) => {
+    if (meshRef.current) {
+      // @ts-ignore
+      meshRef.current.material.uniforms.uTime.value = state.clock.getElapsedTime();
+      // @ts-ignore
+      meshRef.current.material.uniforms.uScrollY.value = window.scrollY;
+      // @ts-ignore
+      meshRef.current.material.uniforms.uResolution.value.set(window.innerWidth, window.innerHeight);
+    }
+  });
+
+  return (
+    <mesh ref={meshRef} position={[0, 0, -5]}>
+      <planeGeometry args={[viewport.width * 2, viewport.height * 2]} />
+      <shaderMaterial
+        fragmentShader={cloudLayerFragmentShader}
+        vertexShader={cloudLayerVertexShader}
+        uniforms={uniforms}
+        transparent={true}
+        depthWrite={false}
+      />
+    </mesh>
+  );
+};
+
 const Scene = () => {
   const { viewport } = useThree();
   // Don't show side elements on very narrow screens (mobile) to avoid overlap
@@ -244,6 +421,9 @@ const Scene = () => {
 
   return (
     <>
+      {/* Parallax Cloud Layer - "Badal" */}
+      <CloudLayer />
+      
       {/* Central Background Element */}
       <DitheredShape position={[0, 0, 0]} scale={1.8} rotationSpeed={0.04} geometryType="knot" />
 
