@@ -3,7 +3,7 @@ import { ShaderBackground } from './components/ShaderBackground';
 import { RESUME_DATA } from './constants';
 import { Section } from './components/ui/Section';
 import { Card } from './components/ui/Card';
-import { motion, useScroll, useSpring } from 'framer-motion';
+import { motion, useScroll, useSpring, AnimatePresence } from 'framer-motion';
 import { 
   Github, 
   Linkedin, 
@@ -13,8 +13,156 @@ import {
   Terminal, 
   Cpu, 
   Database, 
-  Network
+  Network,
+  Menu,
+  X
 } from 'lucide-react';
+
+const navItems = [
+  { label: 'Overview', href: '#overview' },
+  { label: 'Experience', href: '#experience' },
+  { label: 'Skills', href: '#skills' },
+  { label: 'Projects', href: '#projects' },
+  { label: 'Education', href: '#education' },
+];
+
+const Navbar: React.FC = () => {
+  const [isScrolled, setIsScrolled] = useState(false);
+  const [activeSection, setActiveSection] = useState('');
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 50);
+      
+      // Detect active section
+      const sections = navItems.map(item => item.href.replace('#', ''));
+      for (const section of sections.reverse()) {
+        const element = document.getElementById(section);
+        if (element) {
+          const rect = element.getBoundingClientRect();
+          if (rect.top <= 150) {
+            setActiveSection(section);
+            break;
+          }
+        }
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+    e.preventDefault();
+    const element = document.getElementById(href.replace('#', ''));
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' });
+    }
+    setIsMobileMenuOpen(false);
+  };
+
+  return (
+    <>
+      <motion.nav
+        initial={{ y: -100, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.6, delay: 0.5 }}
+        className={`fixed top-0 left-0 right-0 z-40 transition-all duration-500 ${
+          isScrolled 
+            ? 'bg-black/80 backdrop-blur-md border-b border-neutral-800/50' 
+            : 'bg-transparent'
+        }`}
+      >
+        <div className="max-w-5xl mx-auto px-6 md:px-12">
+          <div className="flex items-center justify-between h-16">
+            {/* Logo */}
+            <motion.a
+              href="#"
+              onClick={(e) => {
+                e.preventDefault();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }}
+              className="font-mono text-sm text-neutral-400 hover:text-white transition-colors"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              <span className="text-green-500">●</span> BS
+            </motion.a>
+
+            {/* Desktop Navigation */}
+            <div className="hidden md:flex items-center gap-1">
+              {navItems.map((item, index) => (
+                <motion.a
+                  key={item.href}
+                  href={item.href}
+                  onClick={(e) => handleNavClick(e, item.href)}
+                  className="relative px-4 py-2 text-sm font-mono text-neutral-500 hover:text-white transition-colors"
+                  initial={{ opacity: 0, y: -20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.6 + index * 0.1 }}
+                  whileHover={{ y: -2 }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  {activeSection === item.href.replace('#', '') && (
+                    <motion.span
+                      layoutId="activeNav"
+                      className="absolute inset-0 bg-neutral-800/50 rounded-full border border-neutral-700/50"
+                      transition={{ type: "spring", stiffness: 380, damping: 30 }}
+                    />
+                  )}
+                  <span className="relative z-10">{item.label}</span>
+                </motion.a>
+              ))}
+            </div>
+
+            {/* Mobile Menu Button */}
+            <motion.button
+              className="md:hidden p-2 text-neutral-400 hover:text-white transition-colors"
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              whileTap={{ scale: 0.9 }}
+            >
+              {isMobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
+            </motion.button>
+          </div>
+        </div>
+      </motion.nav>
+
+      {/* Mobile Menu */}
+      <AnimatePresence>
+        {isMobileMenuOpen && (
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            transition={{ duration: 0.2 }}
+            className="fixed inset-x-0 top-16 z-30 md:hidden bg-black/95 backdrop-blur-lg border-b border-neutral-800"
+          >
+            <div className="px-6 py-4 space-y-1">
+              {navItems.map((item, index) => (
+                <motion.a
+                  key={item.href}
+                  href={item.href}
+                  onClick={(e) => handleNavClick(e, item.href)}
+                  className={`block px-4 py-3 rounded-lg font-mono text-sm transition-colors ${
+                    activeSection === item.href.replace('#', '')
+                      ? 'bg-neutral-800 text-white'
+                      : 'text-neutral-400 hover:text-white hover:bg-neutral-900'
+                  }`}
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: index * 0.05 }}
+                >
+                  {item.label}
+                </motion.a>
+              ))}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </>
+  );
+};
 
 const App: React.FC = () => {
   const { scrollYProgress } = useScroll();
@@ -28,6 +176,9 @@ const App: React.FC = () => {
     <div className="min-h-screen bg-[#050505] text-neutral-300 selection:bg-white selection:text-black">
       {/* Background Shader */}
       <ShaderBackground />
+      
+      {/* Navbar */}
+      <Navbar />
       
       {/* Progress Bar */}
       <motion.div
@@ -90,7 +241,7 @@ const App: React.FC = () => {
         </header>
 
         {/* Summary */}
-        <Section title="Overview" className="max-w-3xl">
+        <Section title="Overview" id="overview" className="max-w-3xl">
           <div className="space-y-6 text-lg md:text-xl font-light text-neutral-300 leading-relaxed">
             {RESUME_DATA.summary.map((paragraph, idx) => (
               <p key={idx} className={idx === 0 ? "text-white" : "text-neutral-500"}>{paragraph}</p>
@@ -131,7 +282,7 @@ const App: React.FC = () => {
         </Section>
 
         {/* Stack / Skills */}
-        <Section title="Tech Matrix">
+        <Section title="Tech Matrix" id="skills">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {RESUME_DATA.skills.map((category, idx) => (
               <Card key={idx} className="h-full flex flex-col">
@@ -157,7 +308,7 @@ const App: React.FC = () => {
         </Section>
 
         {/* Projects */}
-        <Section title="Project Modules">
+        <Section title="Project Modules" id="projects">
           <div className="grid grid-cols-1 gap-8">
             {RESUME_DATA.projects.map((project, idx) => (
               <Card key={idx} className="group hover:border-neutral-700 transition-colors">
@@ -187,7 +338,7 @@ const App: React.FC = () => {
         </Section>
 
         {/* Education */}
-        <Section title="Education">
+        <Section title="Education" id="education">
           <div className="border-t border-neutral-900 pt-8">
              {RESUME_DATA.education.map((edu, idx) => (
                <div key={idx} className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">

@@ -133,14 +133,14 @@ void main() {
   // 1. Lighting Calculation
   vec3 lightDir = normalize(vec3(uMouse.x * 0.5, uMouse.y * 0.5, 2.0));
   
-  // Much lower ambient/diffuse to keep it dark
-  float ambient = 0.02;
-  float diffuse = max(dot(vNormal, lightDir), 0.0) * 0.4;
+  // Increased ambient/diffuse for more visibility
+  float ambient = 0.08;
+  float diffuse = max(dot(vNormal, lightDir), 0.0) * 0.6;
   
-  // Rim Lighting - Subtle
+  // Rim Lighting - Enhanced for edge visibility
   vec3 viewDir = normalize(vec3(0.0, 0.0, 5.0) - vPosition);
   float rim = 1.0 - max(dot(viewDir, vNormal), 0.0);
-  rim = pow(rim, 4.0) * 0.5; // Toned down rim
+  rim = pow(rim, 3.0) * 0.7; // Stronger rim for visible edges
   
   float intensity = ambient + diffuse + rim;
   
@@ -151,9 +151,9 @@ void main() {
   // 3. Output Color Strategy - CRITICAL FOR TEXT VISIBILITY
   // Use very dark colors.
   
-  // Lit color is a dark grey/blue, not white
-  vec3 litColor = vec3(0.15, 0.16, 0.18); 
-  vec3 darkColor = vec3(0.0, 0.0, 0.0);
+  // Lit color - brighter grey for more visibility
+  vec3 litColor = vec3(0.25, 0.26, 0.28); 
+  vec3 darkColor = vec3(0.02, 0.02, 0.02);
   
   float quantized = step(threshold, intensity);
   
@@ -321,7 +321,7 @@ const Particles = () => {
 
 export const ShaderBackground: React.FC = () => {
   return (
-    <div className="fixed inset-0 z-0 pointer-events-none opacity-30">
+    <div className="fixed inset-0 z-0 pointer-events-none opacity-70">
       <Canvas 
         camera={{ position: [0, 0, 5], fov: 50 }}
         dpr={[1, 2]} 

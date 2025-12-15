@@ -4,7 +4,7 @@ export const RESUME_DATA: ResumeData = {
   name: "Badal Satyarthi",
   title: "Data Scientist · Machine Learning Engineer · NLP Engineer",
   summary: [
-    "Accomplished Machine Learning Engineer and Software Developer boasting 6+ years of programming experience, with a deep-rooted passion for Machine Learning, Data Science, and AI.",
+    "Accomplished Machine Learning Engineer and Software Developer boasting 8+ years of programming experience, with a deep-rooted passion for Machine Learning, Data Science, and AI.",
     "Fluent in Python and adept at solving complex problems, developing statistical Machine Learning models, and constructing ML pipelines from scratch.",
     "Experience spans cutting-edge NLP research in core NLP tasks (classification, text extraction, LLMs Fine-tuning, embedding fine-tuning) to predictive modelling.",
     "Demonstrates strong domain knowledge in Consulting, Recruitment, Finance and Hiring while excelling in collaboration across all levels of an organization."
