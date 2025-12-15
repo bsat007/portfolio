@@ -6,7 +6,7 @@
 
 ---
 
-Machine Learning Engineer with 6+ years of experience building production-grade AI systems. I specialize in NLP, LLMs, and scalable ML infrastructure — from fine-tuning language models to designing search systems handling 800M+ profiles.
+Machine Learning Engineer with 8+ years of experience building production-grade AI systems. I specialize in NLP, LLMs, and scalable ML infrastructure — from fine-tuning language models to designing search systems handling 800M+ profiles.
 
 Currently serving as **Chief Data Scientist at recruitRyte**, where I lead the development of AI-powered recruitment tools including semantic candidate search, agentic conversation systems, and high-throughput LLM inference pipelines.
 
