@@ -68,19 +68,19 @@ export const RESUME_DATA: ResumeData = {
   projects: [
     {
       title: "Real-Time Fraud Detection System",
-      client: "Alacer - Velocity FinCrime Solution Suite",
+      client: "",
       description: "Developed an unsupervised anomaly detection system using Isolation Forest to identify fraud based on deviations from transaction patterns. Enhanced explainability with SHAP and leveraged Redis for real-time processing.",
       tech: ["Isolation Forest", "SHAP", "Redis", "Unsupervised Learning"]
     },
     {
       title: "Aspect-Based Review Sentiment Extraction",
-      client: "Famepilot",
+      client: "",
       description: "Built an opinion and aspect extractor with spaCy and developed a relation classifier to link opinions with aspects. Used prompt engineering to generate review reports.",
       tech: ["spaCy", "NLP", "Prompt Engineering", "Relation Classifier"]
     },
     {
       title: "Account Research System",
-      client: "Demandfarm",
+      client: "",
       description: "Developed an Account Research system using APIs, web scraping, and AI-powered analysis to provide insights on company profiles.",
       tech: ["APIs", "Web Scraping", "AI Analysis"]
     }

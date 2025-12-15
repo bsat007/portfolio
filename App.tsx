@@ -317,7 +317,7 @@ const App: React.FC = () => {
                      <h3 className="text-xl font-bold text-white mb-2 group-hover:text-green-400 transition-colors duration-300">
                        {project.title}
                      </h3>
-                     <p className="text-xs font-mono text-neutral-500 mb-4">{project.client}</p>
+                     {project.client && <p className="text-xs font-mono text-neutral-500 mb-4">{project.client}</p>}
                      <div className="flex flex-wrap gap-2">
                         {project.tech.map(t => (
                           <span key={t} className="text-[10px] font-mono border border-neutral-800 px-2 py-1 text-neutral-600 uppercase">
@@ -355,9 +355,9 @@ const App: React.FC = () => {
           </div>
         </Section>
 
-        <footer className="py-20 text-center text-xs font-mono text-neutral-800 uppercase tracking-widest">
-           <p>End of Transmission</p>
-           <p className="mt-2">Badal Satyarthi © {new Date().getFullYear()}</p>
+        <footer className="py-20 flex flex-col items-center gap-3 font-mono text-xs uppercase tracking-widest">
+           <p className="bg-white text-black px-4 py-2">End of Transmission</p>
+           <p className="bg-white text-black px-4 py-2">Badal Satyarthi © {new Date().getFullYear()}</p>
         </footer>
 
       </div>
