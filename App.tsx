@@ -234,9 +234,9 @@ const App: React.FC = () => {
              initial={{ opacity: 0 }}
              animate={{ opacity: 1 }}
              transition={{ delay: 1.5, duration: 1 }}
-             className="absolute bottom-12 left-0 font-mono text-xs text-neutral-700 animate-bounce"
+             className="absolute bottom-12 left-0 font-mono text-xs uppercase tracking-widest animate-bounce"
           >
-            SCROLL_TO_INIT_DATA_STREAM ↓
+            <span className="bg-white text-black px-4 py-2">Scroll_to_init_data_stream ↓</span>
           </motion.div>
         </header>
 

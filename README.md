@@ -1,46 +1,79 @@
-# Badal Satyarthi
+# Badal Satyarthi — Portfolio
 
-**Data Scientist · Machine Learning Engineer · NLP Engineer**
+A dark, futuristic portfolio website with custom WebGL shaders and 3D graphics.
 
-📍 Bangalore, India
-
----
-
-Machine Learning Engineer with 8+ years of experience building production-grade AI systems. I specialize in NLP, LLMs, and scalable ML infrastructure — from fine-tuning language models to designing search systems handling 800M+ profiles.
-
-Currently serving as **Chief Data Scientist at recruitRyte**, where I lead the development of AI-powered recruitment tools including semantic candidate search, agentic conversation systems, and high-throughput LLM inference pipelines.
-
-### 🔧 What I Work With
-
-- **AI/ML:** Deep Learning, NLP, LLMs, RAG, Agents, PyTorch, HuggingFace
-- **Infrastructure:** Docker, Kubernetes, AWS, GCP, vLLM, Qdrant, ElasticSearch
-- **Languages:** Python (primary), SQL
-
-### 🎓 Education
-
-B.Tech in Electronics & Communication from **IIT (ISM) Dhanbad**
+**Live:** [View Portfolio](#)
 
 ---
 
-### 🔗 Connect
+## ✨ Unique Features
 
-- 📧 [bsatyarthi@gmail.com](mailto:bsatyarthi@gmail.com)
-- 💼 [LinkedIn](https://linkedin.com/in/bsat007)
-- 💻 [HackerRank](https://hackerrank.com/bsatyarthi)
-- 🚀 [Upwork](https://www.upwork.com/freelancers/01645eaecc573411ab)
+- **Parallax Cloud Layer** — Custom GLSL shader creating layered, drifting clouds with scroll-based parallax. A personal touch representing "Badal" (बादल = cloud in Hindi).
+
+- **Dithered 3D Graphics** — WebGL shader with Bayer matrix dithering for a retro-futuristic aesthetic. Features an animated torus knot and floating icosahedrons.
+
+- **Noise-Driven Animations** — Fractal Brownian Motion (FBM) generates organic cloud textures and smooth vertex displacement.
+
+- **Sci-Fi Terminal Aesthetic** — Dark theme with monospace typography, subtle vignette effects, and cinematic atmosphere.
+
+- **Scroll Progress Indicator** — Spring-animated progress bar with mix-blend-difference for visibility.
+
+- **Responsive Design** — Mobile-first navigation with animated hamburger menu.
 
 ---
 
-## Run Locally
+## 🛠 Tech Stack
 
-**Prerequisites:** Node.js
+| Category | Technologies |
+|----------|-------------|
+| **Framework** | React 19, TypeScript |
+| **3D Graphics** | Three.js, @react-three/fiber |
+| **Shaders** | Custom GLSL (vertex + fragment) |
+| **Animation** | Framer Motion |
+| **Styling** | Tailwind CSS |
+| **Icons** | Lucide React |
+| **Build** | Vite |
 
-1. Install dependencies:
-   ```bash
-   npm install
-   ```
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   ```bash
-   npm run dev
-   ```
+---
+
+## 🚀 Run Locally
+
+**Prerequisites:** Node.js 18+
+
+```bash
+# Install dependencies
+npm install
+
+# Start dev server
+npm run dev
+
+# Build for production
+npm run build
+```
+
+---
+
+## 📁 Project Structure
+
+```
+├── App.tsx              # Main app with sections
+├── constants.ts         # Resume data
+├── types.ts             # TypeScript types
+├── components/
+│   ├── ShaderBackground.tsx   # 3D scene + cloud shaders
+│   └── ui/
+│       ├── Card.tsx
+│       └── Section.tsx
+```
+
+---
+
+## 📧 Contact
+
+- **Email:** [bsatyarthi@gmail.com](mailto:bsatyarthi@gmail.com)
+- **LinkedIn:** [linkedin.com/in/bsat007](https://linkedin.com/in/bsat007)
+- **HackerRank:** [hackerrank.com/bsatyarthi](https://hackerrank.com/bsatyarthi)
+
+---
+
+*End of Transmission*
