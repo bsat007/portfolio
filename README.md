@@ -2,7 +2,7 @@
 
 A dark, futuristic portfolio website with custom WebGL shaders and 3D graphics.
 
-**Live:** [View Portfolio](#)
+**Live:** [satyarthi.online](https://satyarthi.online)
 
 ---
 
