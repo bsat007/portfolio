@@ -1,20 +1,46 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
-</div>
+# Badal Satyarthi
 
-# Run and deploy your AI Studio app
+**Data Scientist · Machine Learning Engineer · NLP Engineer**
 
-This contains everything you need to run your app locally.
+📍 Bangalore, India
 
-View your app in AI Studio: https://ai.studio/apps/drive/1ix1zyJEmTBrj6_ZTeNyej9gwoXvQC8zz
+---
+
+Machine Learning Engineer with 6+ years of experience building production-grade AI systems. I specialize in NLP, LLMs, and scalable ML infrastructure — from fine-tuning language models to designing search systems handling 800M+ profiles.
+
+Currently serving as **Chief Data Scientist at recruitRyte**, where I lead the development of AI-powered recruitment tools including semantic candidate search, agentic conversation systems, and high-throughput LLM inference pipelines.
+
+### 🔧 What I Work With
+
+- **AI/ML:** Deep Learning, NLP, LLMs, RAG, Agents, PyTorch, HuggingFace
+- **Infrastructure:** Docker, Kubernetes, AWS, GCP, vLLM, Qdrant, ElasticSearch
+- **Languages:** Python (primary), SQL
+
+### 🎓 Education
+
+B.Tech in Electronics & Communication from **IIT (ISM) Dhanbad**
+
+---
+
+### 🔗 Connect
+
+- 📧 [bsatyarthi@gmail.com](mailto:bsatyarthi@gmail.com)
+- 💼 [LinkedIn](https://linkedin.com/in/bsat007)
+- 💻 [HackerRank](https://hackerrank.com/bsatyarthi)
+- 🚀 [Upwork](https://www.upwork.com/freelancers/01645eaecc573411ab)
+
+---
 
 ## Run Locally
 
-**Prerequisites:**  Node.js
-
+**Prerequisites:** Node.js
 
 1. Install dependencies:
-   `npm install`
+   ```bash
+   npm install
+   ```
 2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
 3. Run the app:
-   `npm run dev`
+   ```bash
+   npm run dev
+   ```
