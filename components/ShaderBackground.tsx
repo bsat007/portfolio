@@ -339,15 +339,15 @@ void main() {
   vec2 uv4 = uv + vec2(0.0, uScrollY * parallaxStrength * 1.5);
   float cloud4 = cloudShape(uv4, time, 0.08, 6.0, 3.0);
   
-  // Color palette - dark moody clouds
-  vec3 bgColor = vec3(0.02, 0.02, 0.03);
-  vec3 cloudColor1 = vec3(0.06, 0.07, 0.10);  // Deep blue-grey
-  vec3 cloudColor2 = vec3(0.08, 0.09, 0.13);  // Slightly lighter
-  vec3 cloudColor3 = vec3(0.10, 0.11, 0.15);  // Mid tone
-  vec3 cloudColor4 = vec3(0.12, 0.14, 0.18);  // Lighter wisps
+  // Color palette - dark moody clouds (lightened for visibility)
+  vec3 bgColor = vec3(0.03, 0.03, 0.04);
+  vec3 cloudColor1 = vec3(0.10, 0.11, 0.16);  // Deep blue-grey
+  vec3 cloudColor2 = vec3(0.13, 0.14, 0.20);  // Slightly lighter
+  vec3 cloudColor3 = vec3(0.16, 0.17, 0.23);  // Mid tone
+  vec3 cloudColor4 = vec3(0.19, 0.21, 0.27);  // Lighter wisps
   
   // Subtle highlight color for edges
-  vec3 highlightColor = vec3(0.15, 0.18, 0.25);
+  vec3 highlightColor = vec3(0.24, 0.27, 0.35);
   
   // Composite layers with depth
   vec3 color = bgColor;
